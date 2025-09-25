@@ -1,0 +1,50 @@
+{
+  "name": "demowebshop-playwright-cucumber",
+  "version": "1.0.0",
+  "description": "Playwright Cucumber framework for DemoWebshop testing",
+  "main": "index.js",
+  "scripts": {
+    "setup": "node scripts/setup.js",
+    "test": "cucumber-js",
+    "test:headed": "cross-env HEADLESS=false cucumber-js",
+    "test:debug": "cross-env HEADLESS=false SLOW_MO=1000 cucumber-js",
+    "test:ui": "cucumber-js --format @cucumber/pretty-formatter",
+    "test:report": "cucumber-js && node scripts/generate-report.js",
+    "playwright:install": "playwright install",
+    "playwright:codegen": "playwright codegen demowebshop.tricentis.com",
+    "lint": "eslint . --ext .ts,.js",
+    "lint:fix": "eslint . --ext .ts,.js --fix",
+    "build": "tsc",
+    "clean": "rimraf dist reports"
+  },
+  "keywords": [
+    "playwright",
+    "cucumber",
+    "typescript",
+    "testing",
+    "demowebshop",
+    "bdd"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "@cucumber/cucumber": "^10.0.0",
+    "@cucumber/pretty-formatter": "^1.0.0",
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "allure-cucumberjs": "^2.12.0",
+    "cross-env": "^7.0.3",
+    "cucumber-html-reporter": "^7.0.0",
+    "eslint": "^8.54.0",
+    "rimraf": "^5.0.5",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "demowebshop-playwright-cucumber": "file:",
+    "dotenv": "^16.3.1",
+    "faker": "^6.6.6"
+  }
+}
