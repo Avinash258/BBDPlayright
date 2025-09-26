@@ -197,7 +197,82 @@ npm run test -- features/homepage.feature
 
 # Run with headed browser
 npm run test:headed -- --name "Homepage loads successfully"
+
+# Run smoke tests
+npm run test:smoke
+
+# Run regression tests
+npm run test:regression
+
+# Run performance tests
+npm run test:performance
 ```
+
+## 🔄 GitHub Actions CI/CD
+
+### **Automated Workflows**
+
+#### **1. Main Test Workflow** (`.github/workflows/test.yml`)
+- **Triggers**: Push to main/develop, Pull Requests
+- **Matrix Testing**: Node.js 18.x, 20.x + Chromium, Firefox, WebKit
+- **Features**:
+  - Cross-browser testing
+  - Parallel execution
+  - Artifact uploads
+  - PR comments with test results
+  - Quality checks (ESLint, TypeScript)
+
+#### **2. Scheduled Tests** (`.github/workflows/scheduled-tests.yml`)
+- **Triggers**: Daily at 2 AM UTC, Manual dispatch
+- **Test Types**:
+  - **Smoke Tests**: Critical functionality
+  - **Regression Tests**: Full test suite
+  - **Performance Tests**: Load and performance validation
+- **Features**:
+  - Automated daily testing
+  - Manual test type selection
+  - Results notification
+
+#### **3. Environment Testing** (`.github/workflows/environment.yml`)
+- **Triggers**: Manual dispatch
+- **Environments**: Development, Staging, Production
+- **Features**:
+  - Environment-specific test execution
+  - Configurable base URLs
+  - Environment validation
+
+#### **4. Security & Dependencies** (`.github/workflows/security.yml`)
+- **Triggers**: Weekly (Mondays), Push to main, PRs
+- **Features**:
+  - Security vulnerability scanning
+  - Dependency audit
+  - Outdated package detection
+  - Automated update summaries
+
+### **CI/CD Commands**
+```bash
+# CI-specific commands
+npm run ci:setup          # Setup for CI environment
+npm run ci:test           # Run tests in CI mode
+npm run ci:test:headed    # Run tests with headed browser in CI
+npm run build:ci          # Build with CI checks
+npm run lint:ci           # Lint with zero warnings
+```
+
+### **Workflow Status Badges**
+Add these to your README for status monitoring:
+
+```markdown
+![Tests](https://github.com/username/BBDPlayright/workflows/BDD%20Playwright%20Tests/badge.svg)
+![Scheduled Tests](https://github.com/username/BBDPlayright/workflows/Scheduled%20BDD%20Tests/badge.svg)
+![Security](https://github.com/username/BBDPlayright/workflows/Security%20%26%20Dependencies/badge.svg)
+```
+
+### **Artifact Downloads**
+- **Test Results**: Available for 30 days
+- **Screenshots**: Available for 7 days (on failure)
+- **HTML Reports**: Available for 30 days
+- **Security Reports**: Available for 30 days
 
 ## 📋 Test Coverage
 
