@@ -1,0 +1,158 @@
+name: Chrome Headed Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Type of test to run'
+        required: true
+        default: 'smoke'
+        type: choice
+        options:
+        - smoke
+        - regression
+        - all
+
+jobs:
+  chrome-headed-tests:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Lint JavaScript
+      run: npm run lint:ci
+      
+    - name: Install Chrome browser
+      run: npx playwright install --with-deps chromium
+      
+    - name: Run smoke tests in headed mode
+      if: github.event.inputs.test_type == 'smoke' || github.event.inputs.test_type == 'all' || github.event_name != 'workflow_dispatch'
+      run: |
+        echo "🧪 Running smoke tests in Chrome headed mode..."
+        npm run test:pure:headed -- --name "Homepage loads successfully"
+        npm run test:pure:headed -- --name "Newsletter subscription"
+        npm run test:pure:headed -- --name "Search functionality"
+      env:
+        HEADLESS: false
+        BROWSER: chromium
+        
+    - name: Run regression tests in headed mode
+      if: github.event.inputs.test_type == 'regression' || github.event.inputs.test_type == 'all'
+      run: |
+        echo "🧪 Running regression tests in Chrome headed mode..."
+        npm run test:pure:headed
+      env:
+        HEADLESS: false
+        BROWSER: chromium
+        
+    - name: Run all tests in headed mode
+      if: github.event.inputs.test_type == 'all'
+      run: |
+        echo "🧪 Running all tests in Chrome headed mode..."
+        npm run test:pure:headed
+      env:
+        HEADLESS: false
+        BROWSER: chromium
+        
+    - name: Take final screenshot
+      if: always()
+      run: |
+        echo "📸 Taking final screenshot..."
+        # This will be handled by the test framework automatically
+        
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: chrome-headed-test-results
+        path: |
+          reports/
+          dist/
+        retention-days: 7
+        
+    - name: Upload screenshots
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: chrome-headed-screenshots
+        path: reports/screenshots/
+        retention-days: 3
+        
+    - name: Generate test summary
+      if: always()
+      run: |
+        echo "# 🧪 Chrome Headed Test Results" > test-summary.md
+        echo "" >> test-summary.md
+        echo "**Browser**: Chrome (Chromium)" >> test-summary.md
+        echo "**Mode**: Headed (Visible)" >> test-summary.md
+        echo "**Node.js**: 20.x" >> test-summary.md
+        echo "**Platform**: Ubuntu Latest" >> test-summary.md
+        echo "**Test Type**: ${{ github.event.inputs.test_type || 'smoke' }}" >> test-summary.md
+        echo "" >> test-summary.md
+        echo "## 📊 Features" >> test-summary.md
+        echo "- ✅ **Visible Browser** - Watch tests run in real-time" >> test-summary.md
+        echo "- 📸 **Screenshots** - Automatic screenshot capture" >> test-summary.md
+        echo "- 🎯 **Chrome Only** - Focused on Chrome browser testing" >> test-summary.md
+        echo "- ⚡ **Fast Execution** - Optimized for single browser" >> test-summary.md
+        echo "" >> test-summary.md
+        echo "## 🔗 Artifacts" >> test-summary.md
+        echo "- **Test Results**: Available in artifacts" >> test-summary.md
+        echo "- **Screenshots**: Available in artifacts" >> test-summary.md
+        echo "- **Logs**: Available in workflow logs" >> test-summary.md
+        
+    - name: Upload test summary
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: chrome-headed-summary
+        path: test-summary.md
+        retention-days: 7
+        
+    - name: Comment on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const body = `## 🧪 Chrome Headed Test Results
+          
+          **Browser**: Chrome (Chromium)  
+          **Mode**: Headed (Visible)  
+          **Test Type**: ${{ github.event.inputs.test_type || 'smoke' }}  
+          **Node.js**: 20.x  
+          **Platform**: Ubuntu Latest  
+          
+          ### 📊 Features
+          - ✅ **Visible Browser** - Watch tests run in real-time
+          - 📸 **Screenshots** - Automatic screenshot capture
+          - 🎯 **Chrome Only** - Focused on Chrome browser testing
+          - ⚡ **Fast Execution** - Optimized for single browser
+          
+          ### 🔗 Artifacts
+          - **Test Results**: [Download Artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          - **Screenshots**: Available in artifacts
+          - **Workflow**: [View Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          
+          **Note**: Tests run in headed mode for better debugging and visualization.`;
+          
+          await github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            body: body
+          });

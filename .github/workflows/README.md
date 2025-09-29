@@ -1,131 +1,195 @@
-# GitHub Actions Workflows
+# 🚀 GitHub Actions Workflows
 
-This directory contains all the GitHub Actions workflows for the BDD Playwright testing framework.
+This directory contains comprehensive CI/CD workflows for the BDD Playwright framework.
 
-## 📋 Workflow Overview
+## 📋 Available Workflows
 
-| Workflow | File | Trigger | Purpose |
-|----------|------|---------|---------|
-| **Main Tests** | `test.yml` | Push, PR | Cross-browser testing with matrix |
-| **Scheduled Tests** | `scheduled-tests.yml` | Daily, Manual | Automated testing schedules |
-| **Environment Tests** | `environment.yml` | Manual | Environment-specific testing |
-| **Security** | `security.yml` | Weekly, Push, PR | Security scanning & dependencies |
-| **Deploy** | `deploy.yml` | Main branch | Deploy test reports to GitHub Pages |
+### **1. Main Test Workflow** (`test.yml`)
+- **Purpose**: Comprehensive cross-browser testing
+- **Triggers**: Push to main/develop, Pull Requests
+- **Browsers**: Chromium, Firefox, WebKit
+- **Node.js**: 18.x, 20.x
+- **Features**: Matrix testing, parallel execution, artifact uploads
 
-## 🔄 Workflow Details
+### **2. Scheduled Tests** (`scheduled-tests.yml`)
+- **Purpose**: Automated daily testing
+- **Triggers**: Daily at 2 AM UTC, Manual dispatch
+- **Test Types**: Smoke, Regression, Performance
+- **Features**: Automated scheduling, manual test selection
 
-### 1. Main Test Workflow (`test.yml`)
-- **Matrix Testing**: Node.js 18.x, 20.x × Chromium, Firefox, WebKit
-- **Quality Checks**: ESLint, TypeScript compilation
-- **Artifacts**: Test results, screenshots, reports
-- **Notifications**: PR comments with test results
+### **3. Environment Testing** (`environment.yml`)
+- **Purpose**: Environment-specific testing
+- **Triggers**: Manual dispatch
+- **Environments**: Development, Staging, Production
+- **Features**: Environment validation, configurable URLs
 
-### 2. Scheduled Tests (`scheduled-tests.yml`)
-- **Smoke Tests**: Critical functionality validation
-- **Regression Tests**: Full test suite execution
-- **Performance Tests**: Load and performance validation
-- **Manual Dispatch**: Select test type via workflow dispatch
+### **4. Security & Dependencies** (`security.yml`)
+- **Purpose**: Security scanning and dependency management
+- **Triggers**: Weekly (Mondays), Push to main, PRs
+- **Features**: Vulnerability scanning, dependency audit
 
-### 3. Environment Testing (`environment.yml`)
-- **Multi-Environment**: Development, Staging, Production
-- **Environment-Specific**: Different test suites per environment
-- **Configurable URLs**: Dynamic base URL configuration
+### **5. Allure Report Generation** (`allure-report.yml`)
+- **Purpose**: Enhanced HTML reporting
+- **Triggers**: After successful test runs, Manual dispatch
+- **Features**: Interactive dashboards, screenshot attachments, trends
 
-### 4. Security & Dependencies (`security.yml`)
-- **Vulnerability Scanning**: npm audit with moderate level
-- **Dependency Updates**: Outdated package detection
-- **Weekly Schedule**: Automated security checks
-- **Update Summaries**: Automated dependency update reports
+### **6. Chrome Headed Tests** (`chrome-headed-tests.yml`) ⭐ **NEW**
+- **Purpose**: Chrome-focused testing with visible browser
+- **Triggers**: Push, PR, Manual dispatch
+- **Browser**: Chrome (Chromium) only
+- **Mode**: Headed (visible browser)
+- **Features**: 
+  - Fast execution (single browser)
+  - Visual debugging
+  - Screenshot capture
+  - Smoke, regression, or all tests
 
-### 5. Deploy Reports (`deploy.yml`)
-- **GitHub Pages**: Deploy test reports to GitHub Pages
-- **Test Summaries**: Generate comprehensive test summaries
-- **Artifact Management**: Long-term storage of test results
+### **7. Quick Chrome Test** (`quick-chrome-test.yml`) ⭐ **NEW**
+- **Purpose**: Quick single-scenario testing
+- **Triggers**: Manual dispatch only
+- **Features**:
+  - Custom scenario input
+  - Headed or headless mode
+  - Perfect for debugging
+  - Fast execution (~15 minutes)
 
-## 🚀 Usage
+### **8. Deploy Reports** (`deploy.yml`)
+- **Purpose**: Deploy test reports to GitHub Pages
+- **Triggers**: Push to main
+- **Features**: GitHub Pages deployment, report hosting
 
-### Manual Workflow Dispatch
-```bash
-# Trigger scheduled tests manually
-gh workflow run scheduled-tests.yml
+## 🎯 Chrome-Focused Workflows
 
-# Trigger environment tests
-gh workflow run environment.yml --field environment=staging
-
-# Trigger security scan
-gh workflow run security.yml
+### **Chrome Headed Tests**
+```yaml
+# Manual dispatch options
+test_type:
+  - smoke      # Critical functionality
+  - regression # Full test suite  
+  - all        # Complete testing
 ```
 
-### Workflow Status Monitoring
-- **Badges**: Add status badges to README
-- **Notifications**: Configure team notifications
-- **Artifacts**: Download test results and reports
+### **Quick Chrome Test**
+```yaml
+# Manual dispatch options
+scenario: "Homepage loads successfully"  # Custom scenario
+test_mode:
+  - headed    # Visible browser
+  - headless  # Background execution
+```
 
-## 📊 Artifact Retention
+## 🚀 Usage Examples
 
-| Artifact Type | Retention Period | Purpose |
-|---------------|------------------|---------|
-| Test Results | 30 days | Detailed test execution data |
-| Screenshots | 7 days | Failure debugging |
-| HTML Reports | 30 days | Human-readable reports |
-| Security Reports | 30 days | Vulnerability tracking |
-| Performance Data | 7 days | Performance monitoring |
+### **Running Chrome Tests Locally**
+```bash
+# Chrome headless
+npm run test:chrome
+
+# Chrome headed (visible browser)
+npm run test:chrome:headed
+
+# Chrome debug mode (slow motion)
+npm run test:chrome:debug
+
+# Specific scenario
+npm run test:chrome:headed -- --name "Homepage loads successfully"
+```
+
+### **GitHub Actions Usage**
+
+#### **1. Automatic Triggers**
+- **Push to main/develop**: Runs Chrome headed tests
+- **Pull Requests**: Runs Chrome headed tests
+- **Daily at 2 AM**: Runs scheduled tests
+
+#### **2. Manual Triggers**
+- **Chrome Headed Tests**: Select test type (smoke/regression/all)
+- **Quick Chrome Test**: Enter custom scenario and mode
+- **Environment Tests**: Select environment (dev/staging/prod)
+
+## 📊 Workflow Benefits
+
+### **Chrome-Focused Benefits**
+- ✅ **Fast Execution** - Single browser, optimized performance
+- ✅ **Visual Debugging** - Watch tests run in real-time
+- ✅ **Screenshot Capture** - Automatic failure screenshots
+- ✅ **Flexible Testing** - Smoke, regression, or full suite
+- ✅ **Quick Debugging** - Single scenario execution
+
+### **CI/CD Benefits**
+- ✅ **Automated Testing** - Runs on every push/PR
+- ✅ **Manual Control** - Custom test selection
+- ✅ **Artifact Storage** - Test results and screenshots
+- ✅ **PR Integration** - Automatic comments with results
+- ✅ **GitHub Pages** - Deployed reports
 
 ## 🔧 Configuration
 
-### Environment Variables
-- `HEADLESS`: Browser mode (true/false)
-- `BROWSER`: Target browser (chromium/firefox/webkit)
-- `ENVIRONMENT`: Test environment (dev/staging/production)
-- `BASE_URL`: Application base URL
-
-### Secrets (if needed)
-- `GITHUB_TOKEN`: For GitHub Pages deployment
-- `TEST_ENV_VARS`: Environment-specific test variables
-
-## 📈 Performance Optimization
-
-### Parallel Execution
-- **Matrix Strategy**: Multiple Node.js versions and browsers
-- **Job Parallelization**: Independent test execution
-- **Resource Optimization**: Efficient resource usage
-
-### Caching
-- **Node Modules**: npm cache for faster installs
-- **Playwright Browsers**: Browser binary caching
-- **Build Artifacts**: TypeScript compilation caching
-
-## 🛠️ Maintenance
-
-### Regular Updates
-- **Dependencies**: Weekly security scans
-- **Node.js Versions**: Update supported versions
-- **Playwright**: Keep browser versions current
-
-### Monitoring
-- **Workflow Success Rate**: Track test reliability
-- **Execution Time**: Monitor performance trends
-- **Artifact Usage**: Manage storage efficiently
-
-## 📝 Best Practices
-
-1. **Test Isolation**: Each test runs in clean environment
-2. **Resource Management**: Efficient use of GitHub Actions minutes
-3. **Error Handling**: Comprehensive error reporting
-4. **Documentation**: Clear workflow documentation
-5. **Security**: Regular vulnerability scanning
-
-## 🔍 Troubleshooting
-
-### Common Issues
-- **Browser Installation**: Ensure Playwright browsers are installed
-- **Timeout Issues**: Adjust timeout values for long-running tests
-- **Memory Issues**: Optimize test execution for resource constraints
-- **Network Issues**: Handle flaky network conditions
-
-### Debug Mode
+### **Environment Variables**
 ```bash
-# Enable debug logging
-ACTIONS_STEP_DEBUG=true
-ACTIONS_RUNNER_DEBUG=true
+HEADLESS=false          # Visible browser
+BROWSER=chromium        # Chrome browser
+SLOW_MO=1000           # Debug mode (milliseconds)
 ```
+
+### **Test Commands**
+```bash
+# Standard commands
+npm run test:chrome              # Chrome headless
+npm run test:chrome:headed       # Chrome headed
+npm run test:chrome:debug        # Chrome debug
+
+# CI commands  
+npm run ci:setup                 # Setup for CI
+npm run ci:test                  # Run tests in CI
+npm run ci:test:headed           # Run headed tests in CI
+```
+
+## 📈 Monitoring
+
+### **Workflow Status**
+- **Green**: All tests passed
+- **Yellow**: Some tests failed (non-critical)
+- **Red**: Critical tests failed
+- **Gray**: Workflow cancelled or skipped
+
+### **Artifacts**
+- **Test Results**: Available for 30 days
+- **Screenshots**: Available for 7 days
+- **Reports**: Available for 30 days
+- **Logs**: Available in workflow runs
+
+### **Notifications**
+- **PR Comments**: Automatic test result comments
+- **Email Notifications**: Configure in GitHub settings
+- **Slack Integration**: Available via webhooks
+
+## 🛠️ Troubleshooting
+
+### **Common Issues**
+1. **Browser Installation**: Ensure Playwright browsers are installed
+2. **Timeout Issues**: Increase timeout in workflow configuration
+3. **Screenshot Failures**: Check file permissions and disk space
+4. **Allure Errors**: Use Chrome-specific configuration without Allure
+
+### **Debug Steps**
+1. Check workflow logs for detailed error messages
+2. Download artifacts to inspect test results
+3. Run tests locally to reproduce issues
+4. Check environment variables and configuration
+
+## 📚 Documentation
+
+- **Framework README**: [../README.md](../README.md)
+- **Test Documentation**: [../docs/](../docs/)
+- **API Reference**: [../docs/api/](../docs/api/)
+
+## 🤝 Contributing
+
+1. **Fork the repository**
+2. **Create a feature branch**
+3. **Make your changes**
+4. **Test with Chrome workflows**
+5. **Submit a pull request**
+
+The Chrome-focused workflows will automatically run on your PR!

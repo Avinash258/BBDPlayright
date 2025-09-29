@@ -1,0 +1,81 @@
+name: Quick Chrome Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: 'Test scenario to run'
+        required: true
+        default: 'Homepage loads successfully'
+        type: string
+      test_mode:
+        description: 'Test execution mode'
+        required: true
+        default: 'headed'
+        type: choice
+        options:
+        - headed
+        - headless
+
+jobs:
+  quick-test:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build TypeScript
+      run: npm run build
+      
+    - name: Install Chrome browser
+      run: npx playwright install --with-deps chromium
+      
+    - name: Run specific test scenario
+      run: |
+        echo "🧪 Running test scenario: ${{ github.event.inputs.scenario }}"
+        echo "🎯 Mode: ${{ github.event.inputs.test_mode }}"
+        
+        if [ "${{ github.event.inputs.test_mode }}" == "headed" ]; then
+          npm run test:headed -- --name "${{ github.event.inputs.scenario }}"
+        else
+          npm run test -- --name "${{ github.event.inputs.scenario }}"
+        fi
+      env:
+        HEADLESS: ${{ github.event.inputs.test_mode == 'headless' }}
+        BROWSER: chromium
+        
+    - name: Upload results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: quick-test-results-${{ github.event.inputs.test_mode }}
+        path: |
+          reports/
+        retention-days: 3
+        
+    - name: Generate quick summary
+      if: always()
+      run: |
+        echo "# 🚀 Quick Chrome Test Results" > quick-summary.md
+        echo "" >> quick-summary.md
+        echo "**Scenario**: ${{ github.event.inputs.scenario }}" >> quick-summary.md
+        echo "**Mode**: ${{ github.event.inputs.test_mode }}" >> quick-summary.md
+        echo "**Browser**: Chrome (Chromium)" >> quick-summary.md
+        echo "**Execution Time**: ~15 minutes max" >> quick-summary.md
+        echo "" >> quick-summary.md
+        echo "## 🎯 Purpose" >> quick-summary.md
+        echo "- **Quick Testing** - Fast single scenario execution" >> quick-summary.md
+        echo "- **Chrome Focus** - Optimized for Chrome browser" >> quick-summary.md
+        echo "- **Flexible Mode** - Headed or headless execution" >> quick-summary.md
+        echo "- **Debugging** - Perfect for development and debugging" >> quick-summary.md

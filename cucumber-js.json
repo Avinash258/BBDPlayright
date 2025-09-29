@@ -1,0 +1,20 @@
+{
+  "default": {
+    "require": [
+      "step-definitions/common.steps.js",
+      "step-definitions/registration.steps.js",
+      "step-definitions/login.steps.js",
+      "step-definitions/shopping.steps.js",
+      "support/hooks.js"
+    ],
+    "format": [
+      "progress-bar",
+      "json:reports/cucumber_report.json"
+    ],
+    "formatOptions": {
+      "snippetInterface": "async-await"
+    },
+    "publishQuiet": true,
+    "timeout": 60000
+  }
+}

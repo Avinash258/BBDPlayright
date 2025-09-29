@@ -183,20 +183,20 @@ npm install
 # Install Playwright browsers
 npm run playwright:install
 
-# Build TypeScript files
-npm run build
+# Lint JavaScript files
+npm run lint
 ```
 
 ### **Running Tests**
 ```bash
-# Run all tests
-npm run test
-
-# Run specific feature
-npm run test -- features/homepage.feature
+# Run all tests (pure JavaScript)
+npm run test:pure
 
 # Run with headed browser
-npm run test:headed -- --name "Homepage loads successfully"
+npm run test:pure:headed -- --name "Homepage loads successfully"
+
+# Run with debug mode
+npm run test:pure:debug -- --name "Homepage loads successfully"
 
 # Run smoke tests
 npm run test:smoke
@@ -206,6 +206,28 @@ npm run test:regression
 
 # Run performance tests
 npm run test:performance
+
+# Run with Allure reporting
+npm run test:allure
+
+# Generate Allure report
+npm run allure:generate
+
+# Open Allure report in browser
+npm run allure:open
+
+# Serve Allure report (development)
+npm run allure:serve
+
+# Chrome-specific tests
+npm run test:chrome              # Chrome headless
+npm run test:chrome:headed       # Chrome headed mode
+npm run test:chrome:debug        # Chrome debug mode (slow)
+
+# Pure JavaScript framework (no build required)
+npm run test:pure                # Pure JavaScript headless
+npm run test:pure:headed         # Pure JavaScript headed mode
+npm run test:pure:debug          # Pure JavaScript debug mode
 ```
 
 ## 🔄 GitHub Actions CI/CD
@@ -249,6 +271,32 @@ npm run test:performance
   - Outdated package detection
   - Automated update summaries
 
+#### **5. Allure Report Generation** (`.github/workflows/allure-report.yml`)
+- **Triggers**: After successful test runs, Manual dispatch
+- **Features**:
+  - Comprehensive HTML reports
+  - Interactive dashboards
+  - Screenshot attachments
+  - Historical trends
+  - GitHub Pages deployment
+
+#### **6. Chrome Headed Tests** (`.github/workflows/chrome-headed-tests.yml`)
+- **Triggers**: Push, PR, Manual dispatch
+- **Features**:
+  - Chrome browser only
+  - Headed mode (visible browser)
+  - Smoke, regression, or all tests
+  - Screenshot capture
+  - Fast execution
+
+#### **7. Quick Chrome Test** (`.github/workflows/quick-chrome-test.yml`)
+- **Triggers**: Manual dispatch only
+- **Features**:
+  - Single scenario execution
+  - Headed or headless mode
+  - Custom scenario input
+  - Quick debugging
+
 ### **CI/CD Commands**
 ```bash
 # CI-specific commands
@@ -272,7 +320,71 @@ Add these to your README for status monitoring:
 - **Test Results**: Available for 30 days
 - **Screenshots**: Available for 7 days (on failure)
 - **HTML Reports**: Available for 30 days
+- **Allure Reports**: Available for 30 days
 - **Security Reports**: Available for 30 days
+
+## 🎨 Allure Reporting
+
+### **Enhanced HTML Reports**
+The framework includes comprehensive **Allure reporting** for beautiful, interactive test reports with advanced analytics and visualization.
+
+#### **Report Features**
+- ✅ **Interactive Dashboard** - Beautiful HTML reports with filtering
+- 📸 **Screenshots** - Automatic failure and step screenshots
+- 📈 **Trends** - Historical test execution trends and analytics
+- 🏷️ **Labels** - Feature, story, severity, owner categorization
+- 🔍 **Filtering** - Advanced test filtering by status, feature, story
+- 📋 **Timeline** - Detailed execution timeline with step-by-step analysis
+- 📊 **Charts** - Visual representation of test results
+- 🔗 **Links** - Direct links to test artifacts and screenshots
+
+#### **Allure Commands**
+```bash
+# Generate Allure report
+npm run test:allure
+
+# Generate and open report
+npm run allure:generate && npm run allure:open
+
+# Serve report for development
+npm run allure:serve
+
+# Generate report only
+npm run allure:generate
+```
+
+#### **Report Structure**
+```
+reports/
+├── allure-results/          # Raw Allure data
+├── allure-report/           # Generated HTML report
+├── screenshots/            # Test screenshots
+└── cucumber_report.json    # Cucumber JSON report
+```
+
+#### **Report Sections**
+1. **Overview** - Test execution summary and statistics
+2. **Categories** - Test results by category (failed, broken, skipped)
+3. **Suites** - Test suites and scenarios
+4. **Graphs** - Visual charts and trends
+5. **Timeline** - Chronological test execution
+6. **Packages** - Test organization by features
+7. **Test Cases** - Individual test details with steps
+
+#### **Advanced Features**
+- **Step-by-Step Analysis** - Detailed step execution with screenshots
+- **Environment Information** - Browser, Node.js, platform details
+- **Performance Metrics** - Execution time and performance data
+- **Failure Analysis** - Detailed error information and stack traces
+- **Historical Comparison** - Compare results across different runs
+- **Custom Labels** - Feature, story, severity, owner tags
+- **Attachments** - Screenshots, logs, network data, page content
+
+#### **GitHub Integration**
+- **Automatic Generation** - Reports generated on every test run
+- **Artifact Upload** - Reports available as GitHub Actions artifacts
+- **GitHub Pages** - Reports deployed to GitHub Pages for easy access
+- **PR Comments** - Automatic report links in pull request comments
 
 ## 📋 Test Coverage
 

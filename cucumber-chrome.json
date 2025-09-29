@@ -9,8 +9,7 @@
     ],
     "format": [
       "progress-bar",
-      "json:reports/cucumber_report.json",
-      "allure-cucumberjs:reports/allure-results"
+      "json:reports/cucumber_report.json"
     ],
     "formatOptions": {
       "snippetInterface": "async-await"
