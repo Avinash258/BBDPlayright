@@ -140,8 +140,20 @@ class HomePage extends BasePage {
 
   // Home page specific methods
   async navigateToHomePage() {
-    await this.page.goto('https://demowebshop.tricentis.com/');
-    await this.waitForPageLoad();
+    try {
+      console.log('Navigating to DemoWebshop...');
+      await this.page.goto('https://demowebshop.tricentis.com/', { 
+        waitUntil: 'load',
+        timeout: 30000 
+      });
+      console.log('Page loaded, waiting for elements...');
+      // Wait for a specific element to ensure page is fully loaded
+      await this.page.waitForSelector('.header-logo', { timeout: 10000 });
+      console.log('Navigation successful');
+    } catch (error) {
+      console.log('Navigation failed:', error.message);
+      throw error;
+    }
   }
 
   async searchForProduct(searchTerm) {
@@ -253,7 +265,7 @@ class HomePage extends BasePage {
   }
 
   async isNewsletterSubscriptionSuccessful() {
-    const successMessage = this.page.locator('.newsletter-result-block .result');
+    const successMessage = this.page.locator('#newsletter-result');
     return await successMessage.isVisible();
   }
 

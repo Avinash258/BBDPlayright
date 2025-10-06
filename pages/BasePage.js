@@ -52,7 +52,12 @@ class BasePage {
 
   // Common methods
   async waitForPageLoad() {
-    await this.page.waitForLoadState('networkidle');
+    try {
+      await this.page.waitForLoadState('networkidle', { timeout: 30000 });
+    } catch (error) {
+      console.log('Network idle timeout, waiting for domcontentloaded...');
+      await this.page.waitForLoadState('domcontentloaded', { timeout: 10000 });
+    }
   }
 
   async waitForElement(selector, timeout = 30000) {

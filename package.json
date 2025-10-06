@@ -40,14 +40,14 @@
     "ci:test": "npm run test:pure",
     "ci:test:headed": "npm run test:pure:headed"
   },
-    "keywords": [
-      "playwright",
-      "cucumber",
-      "javascript",
-      "testing",
-      "demowebshop",
-      "bdd"
-    ],
+  "keywords": [
+    "playwright",
+    "cucumber",
+    "javascript",
+    "testing",
+    "demowebshop",
+    "bdd"
+  ],
   "author": "Your Name",
   "license": "MIT",
   "devDependencies": {
@@ -57,7 +57,7 @@
     "allure-commandline": "^2.34.1",
     "allure-cucumberjs": "^2.15.1",
     "cross-env": "^7.0.3",
-    "cucumber-html-reporter": "^7.0.0",
+    "cucumber-html-reporter": "^7.2.0",
     "eslint": "^8.54.0",
     "rimraf": "^5.0.5"
   },

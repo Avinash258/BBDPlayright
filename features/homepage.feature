@@ -17,7 +17,7 @@ Feature: Homepage Functionality
 
   Scenario: Featured products are displayed
     Then I should see the featured products
-    And I should see 4 featured products
+    And I should see 6 featured products
 
   Scenario: Newsletter subscription
     When I subscribe to newsletter with email "test@example.com"

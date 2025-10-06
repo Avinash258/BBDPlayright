@@ -1,11 +1,11 @@
 {
   "default": {
     "require": [
-      "dist/steps/common.steps.js",
-      "dist/steps/registration.steps.js",
-      "dist/steps/login.steps.js",
-      "dist/steps/shopping.steps.js",
-      "dist/support/hooks.js"
+      "step-definitions/common.steps.js",
+      "step-definitions/registration.steps.js",
+      "step-definitions/login.steps.js",
+      "step-definitions/shopping.steps.js",
+      "support/hooks.js"
     ],
     "format": [
       "progress-bar",
@@ -15,7 +15,6 @@
     "formatOptions": {
       "snippetInterface": "async-await"
     },
-    "publishQuiet": true,
     "timeout": 60000
   }
 }
